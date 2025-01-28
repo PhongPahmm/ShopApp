@@ -51,9 +51,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Void deleteCategory(int id) {
+    public List<CategoryResponse> deleteCategory(int id) {
+        if(!categoryRepository.existsById(id)) {
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
         categoryRepository.deleteById(id);
+
         var remainCategory = categoryRepository.findAll();
-        return null;
+        return remainCategory.stream().map(categoryMapper::toCategoryResponse).toList();
     }
 }
