@@ -2,6 +2,9 @@ package spring.shopapp.dtos.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +14,8 @@ import lombok.experimental.FieldDefaults;
 public class ProductCreationRequest {
     String name;
     float price;
-    String thumbnail;
+    MultipartFile thumbnail;
     String description;
     int categoryId;
+    List<MultipartFile> productImages;
 }

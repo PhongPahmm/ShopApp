@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import spring.shopapp.dtos.request.ProductCreationRequest;
+import spring.shopapp.dtos.request.ProductImageCreationRequest;
 import spring.shopapp.dtos.request.ProductUpdateRequest;
 import spring.shopapp.dtos.response.ProductResponse;
 import spring.shopapp.exception.AppException;
@@ -13,11 +14,12 @@ import spring.shopapp.exception.ErrorCode;
 import spring.shopapp.mapper.ProductMapper;
 import spring.shopapp.models.Category;
 import spring.shopapp.models.Product;
+import spring.shopapp.models.ProductImage;
 import spring.shopapp.repositories.CategoryRepository;
 import spring.shopapp.repositories.ProductRepository;
+import spring.shopapp.services.file_store.FileStorageService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,15 +29,31 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
     CategoryRepository categoryRepository;
     ProductMapper productMapper;
-
+    FileStorageService fileStorageService;
 
     @Override
     public ProductResponse createProduct(ProductCreationRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId() )
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
 
+        // Upload thumbnail và lấy URL
+        String thumbnailUrl = fileStorageService.store(request.getThumbnail());
+
+        // Ánh xạ các trường cơ bản từ request sang Product
         Product product = productMapper.toProduct(request);
+        product.setThumbnail(thumbnailUrl);
         product.setCategory(category);
+
+        // Xử lý upload các file ảnh và tạo ProductImage
+        List<ProductImage> productImages = request.getProductImages().stream()
+                .map(file -> {
+                    String imageUrl = fileStorageService.store(file);
+                    ProductImage image = new ProductImage();
+                    image.setImageUrl(imageUrl);
+                    return image;
+                })
+                .toList();
+        product.setProductImages(productImages);
         return productMapper.toProductResponse(productRepository.save(product));
     }
 

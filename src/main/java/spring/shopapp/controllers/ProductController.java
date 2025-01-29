@@ -3,6 +3,7 @@ package spring.shopapp.controllers;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import spring.shopapp.dtos.request.ApiResponse;
 import spring.shopapp.dtos.request.ProductCreationRequest;
@@ -19,8 +20,8 @@ import java.util.List;
 public class ProductController {
     ProductService productService;
 
-    @PostMapping("/product")
-    public ApiResponse<ProductResponse> createProduct(@RequestBody ProductCreationRequest request) {
+    @PostMapping(value = "/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<ProductResponse> createProduct(@ModelAttribute ProductCreationRequest request) {
         return ApiResponse.<ProductResponse>builder()
                 .data(productService.createProduct(request))
                 .message("Product created successfully")

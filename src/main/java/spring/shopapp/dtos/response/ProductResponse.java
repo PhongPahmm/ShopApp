@@ -3,8 +3,10 @@ package spring.shopapp.dtos.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import spring.shopapp.models.Category;
+import spring.shopapp.models.ProductImage;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +20,5 @@ public class ProductResponse {
     String thumbnail;
     String description;
     Category category;
+    List<ProductImageResponse> productImages;
 }
