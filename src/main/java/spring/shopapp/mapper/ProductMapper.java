@@ -18,9 +18,6 @@ public interface ProductMapper {
     Product toProduct(ProductCreationRequest request);
 
     ProductResponse toProductResponse(Product product);
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "imageUrl", source = "imageUrl")
-    ProductImageResponse toProductImageResponse(ProductImage productImage);
     @Mapping(target = "id", ignore = true)
     void updateProduct(@MappingTarget Product product, ProductUpdateRequest request);
 }

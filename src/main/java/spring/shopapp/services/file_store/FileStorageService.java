@@ -16,9 +16,10 @@ import java.util.UUID;
 public class FileStorageService {
 
     private final Path rootLocation;
+    public static final String UPLOAD_DIR = "uploads"; // Thêm hằng số
 
     public FileStorageService() {
-        this.rootLocation = Paths.get("uploads").toAbsolutePath().normalize();
+        this.rootLocation = Paths.get(UPLOAD_DIR).toAbsolutePath().normalize();
         try {
             Files.createDirectories(rootLocation);
         } catch (IOException e) {
@@ -31,8 +32,14 @@ public class FileStorageService {
             throw new RuntimeException("Failed to store empty file.");
         }
         try {
-            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-            String uniqueFileName = UUID.randomUUID() + "_" + fileName;
+            // Xử lý tên file: thay khoảng trắng bằng gạch dưới
+            String originalFileName = StringUtils.cleanPath(
+                    Objects.requireNonNull(file.getOriginalFilename())
+                            .replace(" ", "_") // Thay thế khoảng trắng
+                            .replaceAll("[^a-zA-Z0-9._-]", "") // Loại bỏ ký tự đặc biệt
+            );
+
+            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
             Path targetLocation = this.rootLocation.resolve(uniqueFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return uniqueFileName;

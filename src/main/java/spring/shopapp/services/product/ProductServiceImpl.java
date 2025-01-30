@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import spring.shopapp.dtos.request.ProductCreationRequest;
-import spring.shopapp.dtos.request.ProductImageCreationRequest;
 import spring.shopapp.dtos.request.ProductUpdateRequest;
 import spring.shopapp.dtos.response.ProductResponse;
 import spring.shopapp.exception.AppException;
@@ -50,13 +49,13 @@ public class ProductServiceImpl implements ProductService {
                     String imageUrl = fileStorageService.store(file);
                     ProductImage image = new ProductImage();
                     image.setImageUrl(imageUrl);
+                    image.setProduct(product);
                     return image;
                 })
                 .toList();
         product.setProductImages(productImages);
         return productMapper.toProductResponse(productRepository.save(product));
     }
-
 
     @Override
     public ProductResponse getProductById(int id) {
