@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 import spring.shopapp.dtos.request.ApiResponse;
-import spring.shopapp.dtos.request.FavoriteAddRequest;
 import spring.shopapp.dtos.response.FavoriteResponse;
 import spring.shopapp.services.favorite.FavoriteService;
 
@@ -24,10 +23,11 @@ public class FavoriteController {
                 .data(favoriteService.getFavorites())
                 .build();
     }
-    @PostMapping
-    public ApiResponse<FavoriteResponse> addFavorite(@RequestBody FavoriteAddRequest request){
+    @PostMapping("/{userId}/{productId}")
+    public ApiResponse<FavoriteResponse> addFavorite(@PathVariable int userId,
+                                                     @PathVariable int productId){
         return ApiResponse.<FavoriteResponse>builder()
-                .data(favoriteService.addFavorite(request))
+                .data(favoriteService.addFavorite(userId, productId))
                 .message("Favorite added successfully")
                 .build();
     }

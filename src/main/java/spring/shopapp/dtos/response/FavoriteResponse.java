@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FavoriteResponse {
     int id;
-    int user_id;
-    int product_id;
+    int userId;
+    int productId;
 }

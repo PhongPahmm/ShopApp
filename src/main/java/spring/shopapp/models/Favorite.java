@@ -23,5 +23,5 @@ public class Favorite {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
-    Product product_id;
+    Product product;
 }
