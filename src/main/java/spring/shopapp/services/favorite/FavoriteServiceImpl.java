@@ -1,5 +1,6 @@
 package spring.shopapp.services.favorite;
 
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional
 public class FavoriteServiceImpl implements FavoriteService {
     UserRepository userRepository;
     ProductRepository productRepository;
@@ -33,7 +35,12 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .orElseThrow(()->  new AppException(ErrorCode.USER_NOT_FOUND));
         Product product = productRepository.findById(productId)
                 .orElseThrow(()-> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        if(favoriteRepository.existsByUserIdAndProductId(userId, productId)){
+            favoriteRepository.deleteByUserIdAndProductId(userId, productId);
+            return null;
+        }
         Favorite favorite = favoriteMapper.toFavorite(user, product);
+
         return favoriteMapper.toFavoriteResponse(favoriteRepository.save(favorite));
     }
 
