@@ -14,7 +14,7 @@ import spring.shopapp.services.product.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/product")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductController {
@@ -28,7 +28,7 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/product")
+    @GetMapping("")
     public ApiResponse<List<ProductResponse>> getAllProducts() {
         return ApiResponse.<List<ProductResponse>>builder()
                 .data(productService.getAllProducts())
@@ -36,7 +36,7 @@ public class ProductController {
                 .build();
     }
 
-    @GetMapping("/product/{productId}")
+    @GetMapping("/{productId}")
     public ApiResponse<ProductResponse> getProductById(@PathVariable("productId") int productId) {
         return ApiResponse.<ProductResponse>builder()
                 .data(productService.getProductById(productId))

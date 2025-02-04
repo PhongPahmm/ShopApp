@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import spring.shopapp.services.product.product_image.ProductImageService;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/product/image")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductImageController{
     ProductImageService productImageService;
-    @DeleteMapping("product/image/{id}")
+    @DeleteMapping("/{id}")
     public void deleteProductImage(@PathVariable int id) {
         productImageService.deleteProductImage(id);
     }
