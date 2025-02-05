@@ -13,6 +13,7 @@ public enum ErrorCode {
     EMAIL_EXISTED(1010, "Email already existed", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(1011, "User not found", HttpStatus.BAD_REQUEST),
     ROLE_NOT_FOUND(1011, "Role not found", HttpStatus.BAD_REQUEST),
+    ORDER_NOT_FOUND(1011, "Role not found", HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_FOUND(1011, "Category not found", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_FOUND(1011, "Product not found", HttpStatus.BAD_REQUEST),
     USER_NAME_INVALID(1012, "User name must be at least 3 characters", HttpStatus.BAD_REQUEST),

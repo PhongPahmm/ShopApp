@@ -1,8 +1,8 @@
-package spring.shopapp.models;
+package spring.shopapp.dtos.response;
 
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import spring.shopapp.models.OrderStatus;
 
 import java.time.LocalDateTime;
 
@@ -11,16 +11,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Table(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrderResponse {
     int id;
-    @Column(name = "order_date")
     LocalDateTime orderDate;
-    @Column(name = "status")
     OrderStatus orderStatus;
-    @Column(name = "total_money")
     float totalPrice;
 }
