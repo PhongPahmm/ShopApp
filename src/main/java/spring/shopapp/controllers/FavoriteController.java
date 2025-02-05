@@ -23,6 +23,14 @@ public class FavoriteController {
                 .data(favoriteService.getFavorites())
                 .build();
     }
+
+    @GetMapping("/{userId}")
+    public ApiResponse<List<FavoriteResponse>> getFavoriteByUserId(@PathVariable int userId) {
+        return ApiResponse.<List<FavoriteResponse>>builder()
+                .data(favoriteService.getFavoritesByUserId(userId))
+                .build();
+    }
+
     @PostMapping("/{userId}/{productId}")
     public ApiResponse<FavoriteResponse> addFavorite(@PathVariable int userId,
                                                      @PathVariable int productId){

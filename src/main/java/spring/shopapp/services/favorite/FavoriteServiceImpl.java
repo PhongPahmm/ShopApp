@@ -51,6 +51,16 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
+    public List<FavoriteResponse> getFavoritesByUserId(int userId) {
+        List<Favorite> favorites = favoriteRepository.findAllByUserId(userId);
+
+        return favorites.stream()
+                .map(favoriteMapper::toFavoriteResponse)
+                .toList();
+    }
+
+
+    @Override
     public void deleteFavorite(int id) {
 
     }
