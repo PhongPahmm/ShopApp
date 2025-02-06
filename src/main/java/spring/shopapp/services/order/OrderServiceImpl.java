@@ -10,7 +10,6 @@ import spring.shopapp.exception.AppException;
 import spring.shopapp.exception.ErrorCode;
 import spring.shopapp.mapper.OrderMapper;
 import spring.shopapp.models.Order;
-import spring.shopapp.models.OrderStatus;
 import spring.shopapp.repositories.OrderRepository;
 
 import java.util.List;
