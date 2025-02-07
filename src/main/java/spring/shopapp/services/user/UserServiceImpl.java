@@ -3,6 +3,7 @@ package spring.shopapp.services.user;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import spring.shopapp.dtos.request.UserCreationRequest;
 import spring.shopapp.dtos.request.UserUpdateRequest;
@@ -24,10 +25,11 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     RoleRepository roleRepository;
-
+    PasswordEncoder passwordEncoder;
     @Override
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
         user.setRole(userRole);
