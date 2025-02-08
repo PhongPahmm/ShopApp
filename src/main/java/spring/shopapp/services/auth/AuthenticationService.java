@@ -5,4 +5,5 @@ import spring.shopapp.dtos.response.AuthenticationResponse;
 
 public interface AuthenticationService {
     AuthenticationResponse authenticate(AuthenticationRequest request);
+    String generateToken(AuthenticationRequest request);
 }
