@@ -13,7 +13,7 @@ import spring.shopapp.dtos.response.AuthenticationResponse;
 import spring.shopapp.services.auth.AuthenticationService;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {

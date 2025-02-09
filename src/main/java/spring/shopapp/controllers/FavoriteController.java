@@ -11,7 +11,7 @@ import spring.shopapp.services.favorite.FavoriteService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/favorites")
+@RequestMapping("/favorites")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FavoriteController {

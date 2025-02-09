@@ -12,7 +12,7 @@ import spring.shopapp.services.role.RoleService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/roles")
+@RequestMapping("/roles")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleController {

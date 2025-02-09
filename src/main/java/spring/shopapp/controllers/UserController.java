@@ -13,7 +13,7 @@ import spring.shopapp.services.user.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
