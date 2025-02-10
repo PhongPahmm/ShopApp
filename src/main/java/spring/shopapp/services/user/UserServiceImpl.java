@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import spring.shopapp.constant.PredefinedRole;
 import spring.shopapp.dtos.request.UserCreationRequest;
 import spring.shopapp.dtos.request.UserUpdateRequest;
 import spring.shopapp.dtos.response.UserResponse;
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role userRole = roleRepository.save(Role
                         .builder()
-                        .name("USER")
+                        .name(PredefinedRole.USER_ROLE)
                         .build());
         user.setRole(userRole);
         if(userRepository.existsByUsername(request.getUsername())){
