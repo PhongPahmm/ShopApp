@@ -1,11 +1,6 @@
 package spring.shopapp.constant;
 
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import spring.shopapp.models.Role;
-import spring.shopapp.repositories.RoleRepository;
 
 @Configuration
 public class PredefinedRole {
