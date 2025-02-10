@@ -30,8 +30,10 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        Role userRole = roleRepository.save(Role
+                        .builder()
+                        .name("USER")
+                        .build());
         user.setRole(userRole);
         if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTED);
