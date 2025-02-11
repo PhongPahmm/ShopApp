@@ -3,6 +3,7 @@ package spring.shopapp.services.category;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import spring.shopapp.dtos.request.CategoryCreationRequest;
 import spring.shopapp.dtos.request.CategoryUpdateRequest;
@@ -21,7 +22,9 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
+
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CategoryResponse createCategory(CategoryCreationRequest request) {
         Category category = categoryMapper.toCategory(request);
         if(categoryRepository.existsByName(category.getName())) {

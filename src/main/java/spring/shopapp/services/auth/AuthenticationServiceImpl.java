@@ -77,6 +77,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if(userRole != null) {
             stringJoiner.add(user.getRole().getName());
         }
-        return "ROLE_" + stringJoiner.toString();
+        return "ROLE_" + stringJoiner;
     }
 }

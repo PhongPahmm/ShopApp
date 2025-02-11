@@ -3,6 +3,8 @@ package spring.shopapp.controllers;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import spring.shopapp.dtos.request.ApiResponse;
 import spring.shopapp.dtos.request.UserCreationRequest;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserController {
     UserService userService;
 
@@ -26,6 +29,9 @@ public class UserController {
 
     @GetMapping("")
     public List<UserResponse> getAllUsers(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info("grantedAuthority: {}", grantedAuthority.getAuthority()));
         return userService.getAllUsers();
     }
 

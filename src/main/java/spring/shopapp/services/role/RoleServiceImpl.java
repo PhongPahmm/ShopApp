@@ -3,6 +3,7 @@ package spring.shopapp.services.role;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import spring.shopapp.dtos.response.RoleResponse;
 import spring.shopapp.mapper.RoleMapper;
@@ -18,6 +19,7 @@ public class RoleServiceImpl implements RoleService {
     RoleMapper roleMapper;
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<RoleResponse> getAllRoles() {
         return roleRepository.findAll().stream().map(roleMapper::toRoleResponse).toList();
     }
