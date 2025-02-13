@@ -88,29 +88,52 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return "ROLE_" + stringJoiner;
     }
-    @Override
     public void logout(LogoutRequest request) {
         try {
+            log.info("Processing logout request for token: {}", request.getToken());
+
             var signToken = verifyToken(request.getToken());
-
-
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+            String username = signToken.getJWTClaimsSet().getSubject();
+            String jit = signToken.getJWTClaimsSet().getJWTID();
 
-            Token invalidatedToken =
-                    Token.builder().expirationDate(expiryTime)
-                            .token(signToken.getJWTClaimsSet().getJWTID()) // chi save id token
-                            .expired(expiryTime.before(new Date()))
-                            .revoked(true)
-                            .tokenType("LOG_OUT")
-                            .build();
+            log.info("Logout request for user: {}", username);
+
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+            // Kiểm tra nếu token đã bị thu hồi
+            var existingToken = tokenRepository.findByToken(jit);
+            if (existingToken.isPresent()) {
+                log.warn("Token has already been revoked: {}", jit);
+                return;
+            }
+
+            // Lưu token vào DB để đánh dấu là revoked
+            Token invalidatedToken = Token.builder()
+                    .expirationDate(expiryTime)
+                    .token(jit)
+                    .expired(true)
+                    .revoked(true) // Quan trọng: Đánh dấu token là revoked
+                    .tokenType("LOG_OUT")
+                    .user(user)
+                    .build();
 
             tokenRepository.save(invalidatedToken);
-        } catch (AppException | ParseException exception){
-            log.info("Token already expired");
+            log.info("Token revoked successfully for user: {}", username);
+        } catch (ParseException e) {
+            log.error("Invalid token format: {}", e.getMessage());
+            throw new RuntimeException("Invalid token");
+        } catch (AppException e) {
+            log.error("Authentication error: {}", e.getMessage());
+            throw e;
         } catch (JOSEException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Token verification failed", e);
         }
     }
+
+
+
     private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
@@ -118,14 +141,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jit = signedJWT.getJWTClaimsSet().getJWTID();
 
         var verified = signedJWT.verify(verifier);
-
-        if (!(verified && expiryTime.after(new Date()))) throw new AppException(ErrorCode.UNAUTHENTICATED);
-        // Kiểm tra xem token đã bị thu hồi chưa
-        var revokedToken = tokenRepository.findByToken(jit);
-        if (revokedToken.isPresent() && revokedToken.get().getRevoked()) {
+        if (!(verified && expiryTime.after(new Date()))) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
+        // Kiểm tra xem token đã bị thu hồi chưa
+        var revokedToken = tokenRepository.findByToken(jit);
+        if (revokedToken.isPresent() && revokedToken.get().getRevoked()) {
+            log.warn("Attempt to use revoked token: {}", jit);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
         return signedJWT;
     }
+
 }

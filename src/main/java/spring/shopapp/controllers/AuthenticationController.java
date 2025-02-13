@@ -1,6 +1,5 @@
 package spring.shopapp.controllers;
 
-import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,8 +12,6 @@ import spring.shopapp.dtos.request.AuthenticationRequest;
 import spring.shopapp.dtos.request.LogoutRequest;
 import spring.shopapp.dtos.response.AuthenticationResponse;
 import spring.shopapp.services.auth.AuthenticationService;
-
-import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,8 +27,8 @@ public class AuthenticationController {
                 .message("Successfully logged in")
                 .build();
     }
-    @PostMapping("/logout")
-    public ApiResponse<String> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+    @PostMapping("/log-out")
+    public ApiResponse<String> logout(@RequestBody LogoutRequest request) {
         authenticationService.logout(request);
         return ApiResponse.<String>builder()
                 .data("Token has been invalidated")
