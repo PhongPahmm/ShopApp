@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
+import spring.shopapp.exception.AppException;
+import spring.shopapp.exception.ErrorCode;
 import spring.shopapp.repositories.TokenRepository;
 
 import java.io.IOException;
@@ -22,19 +24,18 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Lấy Authorization Header
+        // Get Authorization Header
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Lấy token từ header
+        // get token from header
         String token = authHeader.substring(7);
         log.info("Extracted Token: {}", token);
 
         try {
-            // Giải mã JWT để lấy JTI
             SignedJWT signedJWT = SignedJWT.parse(token);
             String jti = signedJWT.getJWTClaimsSet().getJWTID();
 
@@ -43,14 +44,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // Kiểm tra token trong database
             var revokedToken = tokenRepository.findByToken(jti);
             if (revokedToken.isPresent() && revokedToken.get().getRevoked()) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Token has been revoked");
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"code\": 401, \"message\": \"Unauthenticated\"}");
                 response.getWriter().flush();
                 response.getWriter().close();
-                return;
             }
 
         } catch (ParseException e) {
@@ -62,7 +62,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Tiếp tục xử lý request nếu token hợp lệ
+        // continue execute request if valid
         filterChain.doFilter(request, response);
     }
 }

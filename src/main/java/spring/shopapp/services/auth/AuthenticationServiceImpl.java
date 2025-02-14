@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import spring.shopapp.dtos.request.AuthenticationRequest;
 import spring.shopapp.dtos.request.LogoutRequest;
+import spring.shopapp.dtos.request.RefreshRequest;
 import spring.shopapp.dtos.response.AuthenticationResponse;
 import spring.shopapp.exception.AppException;
 import spring.shopapp.exception.ErrorCode;
@@ -26,6 +27,7 @@ import spring.shopapp.repositories.UserRepository;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
@@ -42,6 +44,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
+
+    @NonFinal
+    @Value("${jwt.valid-duration}")
+    protected long VALID_DURATION;
+
+    @NonFinal
+    @Value("${jwt.refresh-duration}")
+    protected long REFRESH_DURATION;
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -102,19 +112,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-            // Kiểm tra nếu token đã bị thu hồi
             var existingToken = tokenRepository.findByToken(jit);
             if (existingToken.isPresent()) {
                 log.warn("Token has already been revoked: {}", jit);
                 return;
             }
 
-            // Lưu token vào DB để đánh dấu là revoked
             Token invalidatedToken = Token.builder()
                     .expirationDate(expiryTime)
                     .token(jit)
-                    .expired(true)
-                    .revoked(true) // Quan trọng: Đánh dấu token là revoked
+                    .expired(expiryTime.before(new Date()))
+                    .revoked(true)
                     .tokenType("LOG_OUT")
                     .user(user)
                     .build();
@@ -132,6 +140,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
+    @Override
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+        var signToken = verifyToken(request.getToken());
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+        String username = signToken.getJWTClaimsSet().getSubject();
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Token invalidatedToken = Token.builder()
+                .expirationDate(expiryTime)
+                .token(jit)
+                .expired(expiryTime.before(new Date()))
+                .revoked(true)
+                .tokenType("REFRESH")
+                .user(user)
+                .build();
+
+        tokenRepository.save(invalidatedToken);
+        var token = generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
+    }
 
 
     private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
