@@ -101,7 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             log.info("Processing logout request for token: {}", request.getToken());
 
-            var signToken = verifyToken(request.getToken(), false);
+            var signToken = verifyToken(request.getToken(), true);
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
             String username = signToken.getJWTClaimsSet().getSubject();
             String jit = signToken.getJWTClaimsSet().getJWTID();
