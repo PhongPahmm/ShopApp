@@ -101,7 +101,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             log.info("Processing logout request for token: {}", request.getToken());
 
-            var signToken = verifyToken(request.getToken(), true);
+            var signToken = verifyToken(request.getToken());
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
             String username = signToken.getJWTClaimsSet().getSubject();
             String jit = signToken.getJWTClaimsSet().getJWTID();
@@ -141,7 +141,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
-        var signToken = verifyToken(request.getToken(),true );
+        var signToken = verifyToken(request.getToken());
         Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
         String username = signToken.getJWTClaimsSet().getSubject();
         String jit = signToken.getJWTClaimsSet().getJWTID();
@@ -167,14 +167,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
-
-    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expiryTime = (isRefresh)
-                ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
-                    .toInstant().plus(REFRESH_DURATION, ChronoUnit.SECONDS).toEpochMilli())
-                : signedJWT.getJWTClaimsSet().getExpirationTime();
+        Date expiryTime = new Date(signedJWT.getJWTClaimsSet().getIssueTime()
+                    .toInstant().plus(REFRESH_DURATION, ChronoUnit.SECONDS).toEpochMilli());
         String jit = signedJWT.getJWTClaimsSet().getJWTID();
 
         var verified = signedJWT.verify(verifier);
@@ -182,7 +179,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
 
-        // Kiểm tra xem token đã bị thu hồi chưa
         var revokedToken = tokenRepository.findByToken(jit);
         if (revokedToken.isPresent() && revokedToken.get().getRevoked()) {
             log.warn("Attempt to use revoked token: {}", jit);
