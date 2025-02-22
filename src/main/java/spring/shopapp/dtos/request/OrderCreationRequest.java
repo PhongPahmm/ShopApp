@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderCreationRequest {
+    int userId;
     LocalDateTime orderDate;
     OrderStatus orderStatus;
     float totalPrice;

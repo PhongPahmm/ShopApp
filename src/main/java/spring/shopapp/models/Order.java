@@ -18,6 +18,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     int id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    User user;
     @Column(name = "order_date")
     LocalDateTime orderDate;
     @Column(name = "status")

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderResponse {
     int id;
+    int userId;
     LocalDateTime orderDate;
     OrderStatus orderStatus;
     float totalPrice;

@@ -10,7 +10,9 @@ import spring.shopapp.exception.AppException;
 import spring.shopapp.exception.ErrorCode;
 import spring.shopapp.mapper.OrderMapper;
 import spring.shopapp.models.Order;
+import spring.shopapp.models.User;
 import spring.shopapp.repositories.OrderRepository;
+import spring.shopapp.repositories.UserRepository;
 
 import java.util.List;
 
@@ -20,10 +22,14 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     OrderRepository orderRepository;
     OrderMapper orderMapper;
+    UserRepository userRepository;
 
     @Override
     public OrderResponse createOrder(OrderCreationRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         Order order = orderMapper.toOrder(request);
+        order.setUser(user);
        return orderMapper.toOrderResponse(orderRepository.save(order));
     }
 
