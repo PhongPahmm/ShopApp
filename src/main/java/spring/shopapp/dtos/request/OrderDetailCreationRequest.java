@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderDetailCreationRequest {
-    int order_id;
-    int product_id;
+    int orderId;
+    int productId;
     float price;
     int numberOfProducts;
-    float totalPrice;
+    float totalMoney;
     String color;
 }

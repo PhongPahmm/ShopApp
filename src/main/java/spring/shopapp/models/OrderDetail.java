@@ -17,8 +17,8 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     int id;
-    @Column(name = "order_id")
-    int orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    Order order;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Product product;

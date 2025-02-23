@@ -14,6 +14,6 @@ public class OrderDetailResponse {
     int product_id;
     float price;
     int numberOfProducts;
-    float totalPrice;
+    float totalMoney;
     String color;
 }

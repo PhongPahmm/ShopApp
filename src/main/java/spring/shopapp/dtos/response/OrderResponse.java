@@ -16,5 +16,5 @@ public class OrderResponse {
     int userId;
     LocalDateTime orderDate;
     OrderStatus orderStatus;
-    float totalPrice;
+    float totalMoney;
 }

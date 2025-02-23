@@ -15,5 +15,5 @@ public class OrderCreationRequest {
     int userId;
     LocalDateTime orderDate;
     OrderStatus orderStatus;
-    float totalPrice;
+    float totalMoney;
 }

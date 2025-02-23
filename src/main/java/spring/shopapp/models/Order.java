@@ -25,5 +25,5 @@ public class Order {
     @Column(name = "status")
     OrderStatus orderStatus;
     @Column(name = "total_money")
-    float totalPrice;
+    float totalMoney;
 }

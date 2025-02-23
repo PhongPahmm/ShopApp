@@ -19,7 +19,7 @@ public class OrderDetailController {
     OrderDetailService orderDetailService;
 
     @PostMapping
-    public ApiResponse<OrderDetailResponse> createOrder(OrderDetailCreationRequest request){
+    public ApiResponse<OrderDetailResponse> createOrder(@RequestBody OrderDetailCreationRequest request){
         return ApiResponse.<OrderDetailResponse>builder()
                 .data(orderDetailService.createOrderDetail(request))
                 .build();
