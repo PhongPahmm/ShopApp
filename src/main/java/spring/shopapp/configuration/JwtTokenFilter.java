@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
-import spring.shopapp.exception.AppException;
-import spring.shopapp.exception.ErrorCode;
 import spring.shopapp.repositories.TokenRepository;
 
 import java.io.IOException;

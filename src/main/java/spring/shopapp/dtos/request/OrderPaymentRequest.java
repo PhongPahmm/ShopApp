@@ -14,10 +14,9 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderPaymentRequest {
-    int order_id;
-    PaymentMethod payment_method;
-    PaymentStatus payment_status;
+    PaymentMethod paymentMethod;
+    PaymentStatus paymentStatus;
     String note;
-    LocalDateTime payment_date;
-    float amount_paid;
+    LocalDateTime paymentDate;
+    float amountPaid;
 }

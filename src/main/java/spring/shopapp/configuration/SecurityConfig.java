@@ -32,18 +32,19 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/users", "/auth/log-in", "/auth/log-out", "/auth/refresh",
+            "/favorites",
             "/product",
             "/order", "/order-detail"
     };
     @Value("${jwt.signerKey}")
     private String signerKey;
-
     private final TokenRepository tokenRepository;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                     request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                .anyRequest().authenticated());
+                            .requestMatchers(HttpMethod.GET, "/product").permitAll()
+                        .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
         httpSecurity.addFilterBefore(new JwtTokenFilter(tokenRepository), BearerTokenAuthenticationFilter.class);

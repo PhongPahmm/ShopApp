@@ -9,18 +9,4 @@ public class PredefinedRole {
 
     public PredefinedRole() {}
 
-//    @Bean
-//    @Transactional
-//    public CommandLineRunner initRoles(RoleRepository roleRepository) {
-//        return args -> {
-//            if(roleRepository.findByName("ADMIN").isEmpty()) {
-//                Role adminRole = Role.builder().name("ADMIN").build();
-//                roleRepository.save(adminRole);
-//            }
-//            if(roleRepository.findByName("USER").isEmpty()) {
-//                Role userRole = Role.builder().name("USER").build();
-//                roleRepository.save(userRole);
-//            }
-//        };
-//    }
 }
