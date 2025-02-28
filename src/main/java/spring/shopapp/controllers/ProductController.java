@@ -20,7 +20,7 @@ import java.util.List;
 public class ProductController {
     ProductService productService;
 
-    @PostMapping(value = "/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<ProductResponse> createProduct(@ModelAttribute ProductCreationRequest request) {
         return ApiResponse.<ProductResponse>builder()
                 .data(productService.createProduct(request))

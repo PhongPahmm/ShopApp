@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/users", "/auth/log-in", "/auth/log-out", "/auth/refresh",
             "/favorites",
             "/product",
+            "/uploads/**",
             "/order", "/order-detail"
     };
     @Value("${jwt.signerKey}")
@@ -41,9 +42,12 @@ public class SecurityConfig {
     private final TokenRepository tokenRepository;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
+        httpSecurity
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(request ->
                     request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                             .requestMatchers(HttpMethod.GET, "/product").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
@@ -65,18 +69,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter(){
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOriginPattern("*"); // ✅ Hỗ trợ nhiều nguồn
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.setAllowCredentials(true); // ✅ Quan trọng nếu dùng cookie/token
 
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
 
-        return new CorsFilter(urlBasedCorsConfigurationSource);
+        return source;
     }
+
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

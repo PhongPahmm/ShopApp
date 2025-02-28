@@ -62,6 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         var token = generateToken(user);
         return AuthenticationResponse.builder()
+                .userId(user.getId())
                 .authenticated(true)
                 .token(token)
                 .build();
