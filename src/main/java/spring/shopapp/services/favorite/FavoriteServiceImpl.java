@@ -59,9 +59,10 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .toList();
     }
 
-
     @Override
-    public void deleteFavorite(int id) {
-
+    public List<FavoriteResponse> deleteFavorite(int id) {
+        favoriteRepository.deleteById(id);
+        var remainFavorites = favoriteRepository.findAllByUserId(id);
+        return remainFavorites.stream().map(favoriteMapper::toFavoriteResponse).toList();
     }
 }
