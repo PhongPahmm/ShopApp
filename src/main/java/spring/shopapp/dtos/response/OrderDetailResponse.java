@@ -2,6 +2,7 @@ package spring.shopapp.dtos.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import spring.shopapp.models.OrderStatus;
 
 @Data
 @NoArgsConstructor
@@ -15,5 +16,5 @@ public class OrderDetailResponse {
     float price;
     int numberOfProducts;
     float totalMoney;
-    String color;
+    OrderStatus orderStatus;
 }

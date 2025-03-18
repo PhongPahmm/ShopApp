@@ -2,7 +2,7 @@ package spring.shopapp.dtos.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import spring.shopapp.models.OrderStatus;
+import spring.shopapp.models.PaymentMethod;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderCreationRequest {
     int userId;
+    int productId;
+    int quantity;
     LocalDateTime orderDate;
-    OrderStatus orderStatus;
-    float totalMoney;
+    String shippingAddress;
+    PaymentMethod paymentMethod;
 }

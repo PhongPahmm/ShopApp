@@ -28,6 +28,6 @@ public class OrderDetail {
     int numberOfProducts;
     @Column(name = "total_money")
     float totalMoney;
-    @Column(name = "color")
-    String color;
+    @Column(name = "status")
+    OrderStatus orderStatus;
 }

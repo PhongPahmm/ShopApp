@@ -33,6 +33,7 @@ public class SecurityConfig {
             "/users", "/auth/log-in", "/auth/log-out", "/auth/refresh",
             "/favorites",
             "/product",
+            "/product/**",
             "/uploads/**",
             "/order", "/order-detail"
     };
@@ -46,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                     request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                             .requestMatchers(HttpMethod.GET, "/product").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->

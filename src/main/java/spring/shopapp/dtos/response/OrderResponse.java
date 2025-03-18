@@ -2,7 +2,7 @@ package spring.shopapp.dtos.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import spring.shopapp.models.OrderStatus;
+import spring.shopapp.models.PaymentMethod;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,10 @@ import java.time.LocalDateTime;
 public class OrderResponse {
     int id;
     int userId;
+    int productId;
+    int quantity;
     LocalDateTime orderDate;
-    OrderStatus orderStatus;
+    String shippingAddress;
+    PaymentMethod paymentMethod;
     float totalMoney;
 }

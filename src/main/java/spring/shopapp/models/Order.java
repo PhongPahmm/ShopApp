@@ -20,10 +20,13 @@ public class Order {
     int id;
     @ManyToOne(fetch = FetchType.LAZY)
     User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    Product product;
+    int quantity;
     @Column(name = "order_date")
     LocalDateTime orderDate;
-    @Column(name = "status")
-    OrderStatus orderStatus;
+    String shippingAddress;
+    PaymentMethod paymentMethod;
     @Column(name = "total_money")
     float totalMoney;
 }
